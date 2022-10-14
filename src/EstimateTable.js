@@ -4,11 +4,6 @@ import { useEffect, useState } from 'react'
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle'
 
 export default function EstimateTable(props){
-    const [totals, setTotals] = useState({})
-
-    useEffect(() => {
-        setTotals(calculateTotalCosts())
-    }, [props.estimate.line_items])
 
     function handleRemoveClick(cv){
         props.removeCost(cv.row)
@@ -30,24 +25,6 @@ export default function EstimateTable(props){
         return sum
     }
 
-    function calculateTotalCosts(){
-        let matCosts = []
-        let labCosts = []
-        props.estimate.line_items.forEach(item => {
-            if (item.type == 'Materials'){
-                matCosts.push(item.price)
-            }
-            if (item.type == 'Labor') {
-                labCosts.push(item.price)
-            }
-        })
-        return {
-            materials: sumArr(matCosts),
-            labor: sumArr(labCosts),
-            total: sumArr(labCosts) + sumArr(matCosts)
-        }
-    }
-
     return (
         <div>
             <Box sx={{height: 300, width: '100%'}}>
@@ -56,9 +33,6 @@ export default function EstimateTable(props){
                 columns={columns}
                 />
             </Box>
-            Labor: {totals.labor} --
-            Materials: {totals.materials} --
-            Total: {totals.total}
         </div>
     )
 }

@@ -1,4 +1,4 @@
-import { useState, useReducer } from "react";
+import { useState, useReducer, useEffect } from "react";
 import EstimateTable from "./EstimateTable";
 import { v4 as uuidv4 } from 'uuid'
 import { Button, TextField, MenuItem, Select, InputLabel, FormControl } from '@mui/material'
@@ -8,6 +8,37 @@ export default function Estimator(props) {
     const [costTypes, setCostTypes] = useState(['','Materials', 'Labor'])
     const [estimate, estimate_dispatch] = useReducer(updateEstimate, {line_items: []})
     const [cost, setCost] = useState({description: '', type: '', price: ''})
+    const [totals, setTotals] = useState({})
+
+    useEffect(() => {
+        setTotals(calculateTotalCosts())
+    }, [estimate.line_items])
+
+    function sumArr(arr) {
+        let sum = 0;
+        arr.forEach(item => {
+            sum += item
+        });
+        return sum
+    }
+
+    function calculateTotalCosts(){
+        let matCosts = []
+        let labCosts = []
+        estimate.line_items.forEach(item => {
+            if (item.type == 'Materials'){
+                matCosts.push(item.price)
+            }
+            if (item.type == 'Labor') {
+                labCosts.push(item.price)
+            }
+        })
+        return {
+            materials: sumArr(matCosts),
+            labor: sumArr(labCosts),
+            total: sumArr(labCosts) + sumArr(matCosts)
+        }
+    }
 
     function updateEstimate(state, action) {
         switch (action.type) {
@@ -40,6 +71,10 @@ export default function Estimator(props) {
         else {setCost(cost => ({...cost, [e.target.name]: e.target.value}))}
     }
 
+    function saveEstimate(){
+        props.setShowEstimator()
+    }
+
     return (
         <div>
         <h3>Estimator</h3>
@@ -55,7 +90,12 @@ export default function Estimator(props) {
         </FormControl>
         <Button onClick={() => addCost(cost)} disabled={Object.values(cost).some(x => x === null || x === '' || x === 0)}>Add Cost</Button>
         <EstimateTable estimate={estimate} removeCost={removeCost}/>
-        
+        Labor: {totals.labor} --
+        Materials: {totals.materials} --
+        Total: {totals.total}
+        <div>
+            <Button onClick={() => saveEstimate()} disabled={!estimate.line_items.length > 0}>Save</Button>
+        </div>
         </div>
     )
 }
