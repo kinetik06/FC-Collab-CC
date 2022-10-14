@@ -5,17 +5,17 @@ import { useState } from 'react'
 import { Button } from '@mui/material'
 
 function App() {
-  const [showEstimater, setShowEstimator] = useState(false)
+  const [showEstimator, setShowEstimator] = useState(false)
 
   function handleClick() {
-    setShowEstimator(!showEstimater)
+    setShowEstimator(!showEstimator)
   }
   return (
     <div className="App">
-      {!showEstimater && <Button onClick={() => handleClick()}>
+      {!showEstimator && <Button onClick={() => handleClick()}>
         Create Estimate
       </Button>}
-      {showEstimater && <Estimator setShowEstimator={handleClick}/>}
+      {showEstimator && <Estimator setShowEstimator={handleClick}/>}
     </div>
   );
 }
