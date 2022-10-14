@@ -1,5 +1,5 @@
 # FC Estimator Project
-
+A project built using React and Material UI
 ## Available Scripts
 
 In the project directory, you can run:
